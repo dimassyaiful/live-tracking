@@ -2,21 +2,11 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm ci --only=production
-
-# Copy source code
+# Copy compiled app (sudah build)
 COPY . .
 
 # Expose port
 EXPOSE 5556
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:5556/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
-
-# Start application
-CMD ["node", "dist/main.js"]
+# Start application (langsung dari compiled JS)
+CMD ["node", "src/main.js"]
